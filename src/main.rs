@@ -26,8 +26,12 @@ fn main() {
 
         let kernel32: PCSTR = PCSTR::from_raw("kernel32.dll".as_ptr());
         let kernel32_base: HMODULE = match GetModuleHandleA(kernel32) {
-            Ok(k) => k,
+            Ok(c) => c,
             Err(_) => panic!("error while getting kernel32.dll"),
+        };
+        let thread: HANDLE = match CreateRemoteThread(process, None, 0, GetProcAddress(kernel32_base, PCSTR::from_raw("LoadLibraryA".as_ptr())), base_address, 0, None) {
+            Ok(c) => c,
+            Err(_) => panic!("error while creatig remote thread!"),
         };
    }
 }

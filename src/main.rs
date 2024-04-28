@@ -1,4 +1,4 @@
-use windows::Win32::{Foundation::HANDLE, System::Threading::*, System::Memory::*, System::Diagnostics::Debug::*};
+use windows::{core::PCSTR, Win32::{Foundation::{HANDLE, HMODULE}, System::{Diagnostics::Debug::*, LibraryLoader::*, Memory::*, Threading::*}}};
 use std::{env, ffi::{c_void, CString}};
 
 fn main() {
@@ -24,5 +24,10 @@ fn main() {
             Err(_) => panic!("error while writing process memory!"),
         }
 
+        let kernel32: PCSTR = PCSTR::from_raw("kernel32.dll".as_ptr());
+        let kernel32_base: HMODULE = match GetModuleHandleA(kernel32) {
+            Ok(k) => k,
+            Err(_) => panic!("error while getting kernel32.dll"),
+        };
    }
 }
